@@ -1,0 +1,11 @@
+steps:
+- name: gcr.io/cloud-builders/gcloud
+  id: Build-Docker-Image
+  args: ['builds', 'submit', '--region=us-central1', '--tag', 'us-central1-docker.pkg.dev/learning-project-125487/test-repo/test-image:$BUILD_ID']
+
+- name: gcr.io/cloud-builders/kubectl
+  id: rollout-deployment
+  args: ['set', 'image', 'deployment/app1', 'webserver=us-central1-docker.pkg.dev/learning-project-125487/test-repo/test-image:$BUILD_ID']
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-central1-c'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
